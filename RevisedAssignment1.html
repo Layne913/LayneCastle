@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<p>
+			<input type="text" name="Note"></input>
+			<button id="addNote" onclick="addNote()">ADD</button>
+		</p>
+		<p>
+			<input type="text" name="search" onkeyup="showNotes()"></input>
+		</p>
+		<p id="notes"></p>
+		<script>
+			var MAP = new Map();
+			createNote('swimming', true);
+			createNote('go shopping', true);
+
+			function addNote() {
+				var str = document.getElementsByName('Note')[0].value;
+				if (str) {
+					createNote(str, true);
+    			}
+			}
+
+			function createNote(str, addToMap) {
+				var par = document.createElement('li');
+				var removeBtn = document.createElement('button');				
+				var text = document.createTextNode(' '+ str);
+				var element = document.getElementById('notes');
+				removeBtn.innerHTML = 'REMOVE';
+				removeBtn.onclick = function() {
+					par.parentNode.removeChild(par);
+					MAP.delete(text);
+				};
+
+				par.appendChild(removeBtn);
+				par.appendChild(text);
+				element.appendChild(par);
+				if (addToMap) {
+					MAP.set(text, par);
+				}
+
+				document.getElementsByName('Note')[0].value = '';
+			}
+
+			function matchNotes(key) {
+				var searchContent = document.getElementsByName('search')[0].value;
+				var pattern = new RegExp(searchContent);
+				return pattern.test(key);
+			}
+
+			function showNotes() {
+				var myMap = new Map();
+				searchNote(myMap);
+				displayNotes(myMap);
+			}
+
+			function searchNote(myMap) {
+				MAP.forEach(function(value, key){
+					if (matchNotes(key.textContent)) {
+						myMap.set(key,value);
+					}
+				}, MAP)
+			}
+
+
+			function displayNotes(myMap){
+				var element = document.getElementById('notes');
+				element.innerHTML = '';
+				myMap.forEach(function(value, key){
+				createNote(key.textContent, false);
+				}, myMap)
+			}
+
+		</script>
+
+	</body>
+</html>
