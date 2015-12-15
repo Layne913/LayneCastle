@@ -1,39 +1,43 @@
 var net = require('net');
+var colors = require('colors');
 var tcpServer = net.createServer();
 var clients=[];
 tcpServer.on('connection', function(client) {
 	client.setEncoding('utf-8');
-	console.log('connected to the server');
+	console.log('A new client connects to the server');
+
 	if (clients.indexOf(client) === -1) {
-			console.log('currentClient:'+clients.toString);
-			clients.push(client);
-			clients.forEach(function(element){
-				element.write('A new client is coming');
-				element.pipe(element);
+		clients.forEach(function(element) {
+			element.write('A new client is coming');
 		});
+		clients.push(client);
+		client.write('Hello!');
 	}
 
-	client.on('readable', function() {
-		var msg = client.read();
-		console.log('Client Message:' + msg);
-		//console.log('client message:' + msg);
+	// client.on('readable', function() {
+	// 	var msg = client.read();
+	// 	console.log('Server Recieved: ' + msg);
+	// 	clients.forEach(function(element){
+	// 		element.write(msg);
+	// 	});
+	// });
+
+	client.on('data', function(data) {
+		console.log('Server Recieved: ' + data);
 		clients.forEach(function(element){
-			element.write(msg);
-			client.pipe(client);
+			element.write(data);
 		});
+	})
 
-		console.log('client data ' + msg);
-
+	client.on('error', function() {
+		console.log('Client disconnected.'.red);
+		removeClient(client);
 	});
 
-
-	
-
-	
-	// socket.end('end', function(){
-	// 	console.log('client disconnected');
-	// })
-
+	function removeClient(client) {
+		var index = clients.indexOf(client);
+		clients.splice(index, 1);
+	}
 	
 });
 
