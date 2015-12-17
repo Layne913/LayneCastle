@@ -1,0 +1,12 @@
+$> mkdir dojo
+$> cd dojo
+$> npm init
+$> npm install -g jasmine
+$> jasmine init
+
+Change test in package,jason to jasmine
+
+put the test file and the original file in the spec folder.
+
+In the project folder, run with the command line:
+npm test

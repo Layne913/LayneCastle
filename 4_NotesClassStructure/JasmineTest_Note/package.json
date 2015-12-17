@@ -1,0 +1,11 @@
+{
+  "name": "layne",
+  "version": "1.0.0",
+  "description": "first test Notes",
+  "main": "main.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "author": "",
+  "license": "ISC"
+}
