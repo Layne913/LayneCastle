@@ -12,8 +12,8 @@ Notes.prototype.removeNote = function(note) {
 	this.notes.splice(index, 1);
 }
 
-Notes.prototype.searchNote = function(note, callback) {
-	var pattern = new RegExp(note);
+Notes.prototype.searchNote = function(searchContent, callback) {
+	var pattern = new RegExp(searchContent);
 	var result = this.notes.filter(function(element) {
 		return pattern.test(element);
 	});
