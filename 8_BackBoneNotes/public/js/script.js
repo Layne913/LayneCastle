@@ -14,7 +14,8 @@ var Notes = Backbone.Collection.extend({
 	url:'http://localhost:8080/notes'
 });
 
-var notes = new Notes();
+//var notes = new Notes();
+
 //Backbone Views
 var NoteView = Backbone.View.extend({
 	tagName: 'li',  
@@ -22,9 +23,9 @@ var NoteView = Backbone.View.extend({
 	initialize: function() {
 	},
 	events: {
-		'click #remove-button': 'delete'
+		'click #remove-button': 'onRemoveSelectedNote'
 	},
-	delete: function() {
+	onRemoveSelectedNote: function() {
 		//this.model: backbone Model
 		console.log('delete note id:' + this.model.id); 
 		//console.log('delete note id:' + this.model.toJSON()._id); 
@@ -52,6 +53,8 @@ var NotesView = Backbone.View.extend({
 	initialize: function() {
 		this.listenTo(this.collection, 'add', this.render);
 		this.listenTo(this.collection, 'remove', this.render);
+		console.log(this);
+		initializeDefaultNotes(this);
 	 },
 	render: function() {
 		this.$el.empty();
@@ -67,29 +70,17 @@ var NotesView = Backbone.View.extend({
 // notes.url = "/notes?search="
 // notes.fetch
 
-
-// var appView = Backbone.View.extend({
-// 	initialize: function() {
-// 		var notesView = new NotesView({ collection: notes });
-// 	}
-// });
-
-var notesView = new NotesView({ collection: notes });
-notesView.collection.fetch( {
-	success: function(collection) {	
- 				collection.each(function(note) {
- 					console.log('Successfully got the note with Id:'+ note._id);
- 				})
-	},	
-	error: function() {
-		console.log('Failed to get the notes!');
-	}
-});
-
-$(document).ready(function() {
-	$('#add-button').on('click', function() {
+var appView = Backbone.View.extend({
+	el: $('.app'),
+	initialize: function() {
+		notesView = new NotesView({ collection: new Notes() });
+	},
+	events: {
+		'click #add-button': 'onAddNote'
+	},
+	onAddNote: function() {
 		var note = new Note({name: $('#note-input').val()});		
-		notes.add(note);
+		notesView.collection.add(note);
 		console.log('Post note name:' + note.toJSON().name);
 		note.save(null, {success: function(note) {
 					console.log('Successfully saved note with name:' + note.toJSON().name);
@@ -108,6 +99,25 @@ $(document).ready(function() {
 		// 		}
 		// });		
 		$('#note-input').val('');
+	}
+
+});
+
+
+function initializeDefaultNotes(notesView){
+	notesView.collection.fetch( {
+		success: function(collection) {	
+ 					collection.each(function(note) {
+ 						console.log('Successfully got the note with Id:'+ note._id);
+ 					})
+		},	
+		error: function() {
+			console.log('Failed to get the notes!');
+		}
 	});
-})
+}
+
+
+var appView = new appView();
+
 
