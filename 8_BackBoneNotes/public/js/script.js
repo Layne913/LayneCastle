@@ -1,10 +1,9 @@
 //Backbone Model
 
 var Note = Backbone.Model.extend({
+	idAttribute: "_id",
 	defaults: {
-		idAttribute: "_id",
-		name: '',
-		url:''
+		name: ''
 	}
 });
 
@@ -18,19 +17,24 @@ var Notes = Backbone.Collection.extend({
 var notes = new Notes();
 //Backbone Views
 var NoteView = Backbone.View.extend({
-	tagName: 'li',
-	template: _.template($('script[name=notes-list-template]').html()),
+	tagName: 'li',  
+	template: _.template($('.notes-list-template').html()),
 	initialize: function() {
 	},
 	events: {
-		'click button[name=remove-button]': 'delete'
+		'click #remove-button': 'delete'
 	},
 	delete: function() {
-		console.log('delete Model:' + this.model.toJSON());
-		console.log('delete Model Name:' + this.model.toJSON().name); 
+		//this.model: backbone Model
+		console.log('delete note id:' + this.model.id); 
+		//console.log('delete note id:' + this.model.toJSON()._id); 
 
 		this.model.destroy({
 			success: function(note) {
+				//note == object in response? backbone Model (note.id?)?
+				//if the object in response haven't define name attribute
+				console.log('Successfully delete the note with name:' + note.toJSON().name);
+				console.log('Successfully delete the note with id:' + note.id);
 				console.log('Successfully delete the note with id:' + note.toJSON()._id);
 			},
 			error: function() {
@@ -44,19 +48,18 @@ var NoteView = Backbone.View.extend({
 });
 
 var NotesView = Backbone.View.extend({
-	el: $('ul[name=notes-list]'),
+	el: $('.notes-list'),
 	initialize: function() {
-		this.collection.on('add', this.render, this);
-		this.collection.on('remove', this.render, this);
+		this.listenTo(this.collection, 'add', this.render);
+		this.listenTo(this.collection, 'remove', this.render);
 	 },
 	render: function() {
-		var self = this;
-		this.$el.html('');
-		_.each(this.collection.toArray(), function(note) {
+		this.$el.empty();
+		this.collection.each(function(note) {
 			var noteView = new NoteView({model: note});
 			noteView.render();
-			self.$el.append(noteView.el);
-		});
+			this.$el.append(noteView.el);
+		}, this);
 	}
 });
 
@@ -64,25 +67,29 @@ var NotesView = Backbone.View.extend({
 // notes.url = "/notes?search="
 // notes.fetch
 
+
+// var appView = Backbone.View.extend({
+// 	initialize: function() {
+// 		var notesView = new NotesView({ collection: notes });
+// 	}
+// });
+
 var notesView = new NotesView({ collection: notes });
 notesView.collection.fetch( {
-	success: function(collection)
-		{	
- 			_.each(collection.toJSON(),
- 			function(note) {
-				console.log('Successfully got the note with Id:'+ note._id);
-			})
-		},	
+	success: function(collection) {	
+ 				collection.each(function(note) {
+ 					console.log('Successfully got the note with Id:'+ note._id);
+ 				})
+	},	
 	error: function() {
 		console.log('Failed to get the notes!');
 	}
 });
 
 $(document).ready(function() {
-	$('button[name=add-button]').on('click', function() {
-		var note = new Note({name: $('input[name=note-input]').val()});		
+	$('#add-button').on('click', function() {
+		var note = new Note({name: $('#note-input').val()});		
 		notes.add(note);
-		console.log('Post note:' + note.toJSON());
 		console.log('Post note name:' + note.toJSON().name);
 		note.save(null, {success: function(note) {
 					console.log('Successfully saved note with name:' + note.toJSON().name);
@@ -92,7 +99,7 @@ $(document).ready(function() {
 				}
 		});
 
-		// notes.create({name: $('input[name=note-input]').val()},{
+		// notes.create({name: $('#note-input').val()},{
 		// 		success: function(note) {
 		// 			console.log('Successfully saved note with name:' + note.name);
 		// 		},
@@ -100,7 +107,7 @@ $(document).ready(function() {
 		// 			console.log('Failed to save the note');
 		// 		}
 		// });		
-		$('input[name=note-input]').val('');
+		$('#note-input').val('');
 	});
 })
 

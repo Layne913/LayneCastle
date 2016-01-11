@@ -7,14 +7,14 @@
 <body>
 	<h1>Notes</h1>
 	<p>
-		<input name = 'note-input'></input>
-		<button name = 'add-button'>Add</button>
+		<input id = 'note-input'></input>
+		<button id = 'add-button'>Add</button>
 	</p>
 	<p>
-		<input type="text" name="search" onkeyup="search()"></input>
+		<input type="text" class="search" onkeyup="search()"></input>
 	</p>
-	<ul name='notes-list'></ul>
-	<script type = "text/template" name = "notes-list-template"> <%= name %> <button name='remove-button'>Remove</button> </script>
+	<ul class='notes-list'></ul>
+	<script type = "text/template" class = "notes-list-template"> <%= name %> <button id='remove-button'>Remove</button> </script>
 
 	<script src = "/bower_components/jquery/dist/jquery.js"></script>
 	<script src = "/bower_components/underscore/underscore.js"></script>

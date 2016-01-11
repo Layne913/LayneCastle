@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var port = process.env.PORT || 8080;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false })); 
-app.use(express.static(__dirname+ '/public'));
+app.use(express.static(__dirname + '/public'));
 
 var noteList = [{name:'swimming', _id: 0}, {name:'running', _id: 1}];
 var notes = new Notes(noteList);
@@ -27,24 +27,22 @@ app.get('/notes', function(req, res) {
 // });
 
 app.post('/notes', function(req, res) {
-	console.log('postNote');
 	var newNote = req.body;
+	console.log('postNote:'+ newNote.name);
 	if(!newNote && newNote.name.trim != '') {
 		res.send({success: false, reason: 'cannot create the note'});
 		return;
 	}
-
 	notes.addNote(newNote.name, function(note) {
 		res.send(note);
 	});
 });
 
 app.delete('/notes/:id', function(req,res) {
-	
-	console.log('recieved a delete request for id:'+ req.params.id);
-	// var noteID = req.params.id;
-	// console.log('delete id:'+noteID);
-	// notes.removeNoteById(noteID);
-	// res.send({_id: noteID});
+	console.log('Delete id:'+ req.params.id);
+	//Exception Handle
+	var noteID = Number(req.params.id);
+	notes.removeNoteById(noteID);
+	res.send({_id: noteID});
 });
 app.listen(port);
