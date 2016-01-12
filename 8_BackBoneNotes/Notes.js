@@ -7,7 +7,6 @@
 		this.notesCount ++;
 		this.notes.push({name: noteName, _id: this.notesCount});
 		callback({name: noteName, _id: this.notesCount});	
-
 	}
 
 	Notes.prototype.removeNote = function(note) {

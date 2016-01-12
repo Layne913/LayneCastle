@@ -7,16 +7,11 @@ var Note = Backbone.Model.extend({
 	}
 });
 
-
-//Backbone Collection
 var Notes = Backbone.Collection.extend({
 	model: Note,
 	url:'http://localhost:8080/notes'
 });
 
-//var notes = new Notes();
-
-//Backbone Views
 var NoteView = Backbone.View.extend({
 	tagName: 'li',  
 	template: _.template($('.notes-list-template').html()),
@@ -26,9 +21,8 @@ var NoteView = Backbone.View.extend({
 		'click #remove-button': 'onRemoveSelectedNote'
 	},
 	onRemoveSelectedNote: function() {
-		//this.model: backbone Model
 		console.log('delete note id:' + this.model.id); 
-		//console.log('delete note id:' + this.model.toJSON()._id); 
+		notesView.collection.url = '/notes';
 
 		this.model.destroy({
 			success: function(note) {
@@ -53,62 +47,69 @@ var NotesView = Backbone.View.extend({
 	initialize: function() {
 		this.listenTo(this.collection, 'add', this.render);
 		this.listenTo(this.collection, 'remove', this.render);
-		console.log(this);
 		initializeDefaultNotes(this);
 	 },
 	render: function() {
 		this.$el.empty();
 		this.collection.each(function(note) {
-			var noteView = new NoteView({model: note});
+			var noteView = new NoteView({
+				model: note
+			});
 			noteView.render();
 			this.$el.append(noteView.el);
 		}, this);
 	}
 });
 
-// var notes = new Notes();
-// notes.url = "/notes?search="
-// notes.fetch
-
 var appView = Backbone.View.extend({
 	el: $('.app'),
 	initialize: function() {
-		notesView = new NotesView({ collection: new Notes() });
+		notesView = new NotesView({
+			collection: new Notes() 
+		});
 	},
 	events: {
-		'click #add-button': 'onAddNote'
+		'click #add-button': 'onAddNote',
+		'keyup #search-input': 'onSearchNote'
 	},
 	onAddNote: function() {
-		var note = new Note({name: $('#note-input').val()});		
+		notesView.collection.url = '/notes';
+		var note = new Note({
+			name: $('#note-input').val()
+		});		
 		notesView.collection.add(note);
 		console.log('Post note name:' + note.toJSON().name);
-		note.save(null, {success: function(note) {
-					console.log('Successfully saved note with name:' + note.toJSON().name);
-				},
-				error: function() {
-					console.log('Failed to save the note');
-				}
+		note.save(null, {
+							success: function(note) {
+									console.log('Successfully saved note with name:' + note.toJSON().name);
+						},
+							error: function() {
+									console.log('Failed to save the note');
+						}
 		});
-
-		// notes.create({name: $('#note-input').val()},{
-		// 		success: function(note) {
-		// 			console.log('Successfully saved note with name:' + note.name);
-		// 		},
-		// 		error: function(){
-		// 			console.log('Failed to save the note');
-		// 		}
-		// });		
 		$('#note-input').val('');
+	},
+
+	onSearchNote: function(){
+		var searchContent = $('#search-input').val();
+		console.log(searchContent);
+		notesView.collection.url = '/notesSearch?search=' + searchContent; 
+		notesView.collection.fetch( {
+			success: function(collection) {						collection.each(function(note) {
+						console.log('Matched Note:' + note.id);
+					})
+			},
+			error: function() {
+					console.log('Failed to display matched notes');				} 
+			});
 	}
-
 });
-
 
 function initializeDefaultNotes(notesView){
 	notesView.collection.fetch( {
 		success: function(collection) {	
  					collection.each(function(note) {
- 						console.log('Successfully got the note with Id:'+ note._id);
+ 						console.log('Successfully got the note with Id:'+ note.toJSON()._id);
  					})
 		},	
 		error: function() {
@@ -116,7 +117,6 @@ function initializeDefaultNotes(notesView){
 		}
 	});
 }
-
 
 var appView = new appView();
 
