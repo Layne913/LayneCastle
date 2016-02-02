@@ -1,0 +1,74 @@
+mongod(start mongo database)
+mongo (conect to the database )
+
+show dbs (show all the database in the computer)
+
+use names (go to a database called names)
+
+db; (current database context)
+
+db.mynames.insert({name: 'nathan', email: ''}); ((create a new document and insert it in to the database(current database: that is names))mynames(collection name),{name: 'nathan', email: ''}:document)
+
+db.mynames.find();(find all documents in the mynames collection)
+
+db.mynames.find().pretty();
+
+db.mynames.findOne();(find the first document in the database's collection)
+
+db.players.remove({"_id":xfios});(remove the database with _id:)
+
+db.players.update(
+	{"_id":ObjectId("dofiejf;erj")},
+	{
+		"name": "Layne",
+		"id": "jsoifjer"
+	}
+);(update the player whose _id is specified and with information given later)
+
+db.players.drop();
+(remove the collection whose name is players)
+
+db.players.insert([
+	{
+		name:Layne,
+	 	age: 5
+	},
+	{
+		name: John,
+		age: 24
+	}
+]);(insert multiple documents)
+
+FIND OR SEARCH
+db.players.find(["name": "Layne"]);(find the document that matches the criteria)
+db.players.find(
+	{
+		#or: [
+			{"name": "Layne"},
+			{"name": "John"}
+		]
+	})
+
+db.players.find(
+	{
+		"age": {$gt:30}
+	}
+)
+find all players whose age is greater than 30;
+gt: greater than; lt: less than; gte: greater than or equal; lte: less than or equal than; ne: not equal;
+
+
+
+
+"_id" is the field created automatically in the mongo db  
+
+
+
+
+
+
+
+
+mongod
+
+mongod --dbpath c::\dev\db

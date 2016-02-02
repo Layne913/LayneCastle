@@ -1,0 +1,20 @@
+structure : 
+1.OS->2.Node.js(JVM)->3.JavaScript Code 
+
+http://nodeschool.io website to learn node.js
+
+semetic vision 
+major(break privious things,is not backward compatible).minor(new features).fix(fixed bugs)
+
+nvm: node version manager
+	 change current node js version : nvm use 4.2.2
+	 ERROR: install NVM
+
+work with node: a.type node in the command line , then command
+				b.node -e "console.log(Data.now())"
+				c.node main.js
+
+Event Loop
+
+Sync: the second thread? run after the first one finished 
+without Sync: run parallal, have call back function, if it is 

@@ -1,0 +1,7 @@
+git remove --v
+
+git pull upstream(main one) master 
+
+git branch -a -vv
+
+git pull = git fetch + git merge 
