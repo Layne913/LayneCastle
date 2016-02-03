@@ -27,14 +27,6 @@ function init(){
 	searchForm.addEventListener('submit', onSearchProduct);
 
  	productsStore = new ProductsStore(initialBookCollection);
-
-
-	var id = 0;
-	productsStore.getProducts().forEach(function(product) {
-		product.id = id + 1;
-		id ++;
-		addProductToPage(product);
-	});
 }
 
 function onAddProduct(e) {
@@ -63,6 +55,7 @@ function validateProduct(product) {
 	checkInputsEmpty(productInfo.productName, productInfo.imageURL, productInfo.description)
 }
 
+// Generic method
 function isValidString(str) {
 	return typeof str === 'string' && str.length > 0; 
 }
@@ -71,11 +64,14 @@ function getImageURL(element) {
 	return element.value.replace(/^C:\\fakepath\\/i, 'res/');
 }
 
+// // Generic method
+// replace with DOM reset() method
 function clearAddInputs() {
 	Array.from(addForm.elements).forEach(function(element) {
 		element.value = '';
 	});
 }
+
 
 function getProductsInputs(form) {
 	return {
@@ -85,6 +81,7 @@ function getProductsInputs(form) {
 	}
 }
 
+// Generic method
 function getInputValueFromForm(form, name) {
 	var element = form.elements[name];
 	return (name === 'imageURL') ? getImageURL(element) : element.value;
